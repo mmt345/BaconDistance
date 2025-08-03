@@ -9,8 +9,8 @@ CAST_PATH = 'title.principals.tsv' # This holds the relationships between actors
 MOVIES_PATH = 'title.basics.tsv'
 OUTPUT_JSON_PATH = 'movie_database.json'
 
-MAX_ACTORS = 1000000
-MAX_CAST = 1000000
+MAX_ACTORS = 10000000
+MAX_CAST = 20000000
 MAX_MOVIES = 1000000
 
 # TSV FIELD COUNTS
@@ -22,7 +22,6 @@ MOVIE_NUM_FIELDS = 9
 JSON_INDENT = 4
 
 
-# UTILITY
 def read_tsv_lines(file_path: str, max_rows: int) -> List[List[str]]:
     """
     Reads a TSV file, skips the header, and returns up to max_rows split lines.
@@ -33,14 +32,16 @@ def read_tsv_lines(file_path: str, max_rows: int) -> List[List[str]]:
     :return: List of list of strings (split parts).
     """
     lines = []
+
     with open(file_path, 'r', encoding='utf-8') as f:
         next(f)  # Skip header
-        for i in range(max_rows):
-            line = f.readline()
-            parts = line.strip().split('\t')
-            lines.append(parts)
-    return lines
 
+        for i, line in enumerate(f):
+            if i >= max_rows:
+                return lines
+            lines.append(line.strip().split('\t'))
+
+    return lines
 
 # LOADERS
 def load_actors(file_path: str, max_rows) -> Dict[str, Actor]:
@@ -130,7 +131,7 @@ def load_movies(
     return movies
 
 
-# EXPORT
+# EXPORT TO FILE
 def save_to_json(actors: List[Actor], movies: List[Movie], out_path: str) -> None:
     """
     Saves actors and movies to a JSON file.
