@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bacon Distance</title>
+</head>
+<body>
+  <h1>Bacon Distance Calculator :)</h1>
+
+  <form action="{{ url_for('bacon_distance') }}" method="get">
+    <label for="from_actor">From Actor:</label>
+    <input type="text" id="from_actor" name="from_actor" required>
+    <br><br>
+
+    <label for="to_actor">To Actor (optional):</label>
+    <input type="text" id="to_actor" name="to_actor" placeholder="Kevin Bacon">
+    <br><br>
+
+    <button type="submit">Calculate Distance</button>
+  </form>
+
+  <hr>
+  <p>You can also send requests directly to <code>/bacon_distance?from_actor=...</code></p>
+</body>
+</html>

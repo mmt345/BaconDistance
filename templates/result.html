@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bacon Distance Result</title>
+</head>
+<body>
+  <h1>Bacon Distance Result</h1>
+
+  {% if error %}
+    <p style="color: red;">{{ error }}</p>
+  {% elif distance is not none %}
+    <p><strong>From:</strong> {{ from_actor }}</p>
+    <p><strong>To:</strong> {{ to_actor }}</p>
+    <p><strong>Distance:</strong> {{ distance }}</p>
+  {% else %}
+    <p>No connection found between <strong>{{ from_actor }}</strong> and <strong>{{ to_actor }}</strong>.</p>
+  {% endif %}
+
+  <hr>
+  <a href="{{ url_for('home') }}">Back to Calculator</a>
+</body>
+</html>
