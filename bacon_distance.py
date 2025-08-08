@@ -64,7 +64,7 @@ def main():
 
     if args.from_actor:
         # Single calculation mode
-        calculate_and_print_distance(graph, args.from_actor, args.to_actor)
+        calculate_and_print_distance(graph, args.from_actor.strip().title(), args.to_actor.strip().title())
     else:
         # Interactive mode
         print("Interactive Bacon Distance Calculator. Enter actor names (Ctrl+C to exit).")
@@ -74,7 +74,7 @@ def main():
             while True:
                 line = input("Enter actor(s): ").strip()
                 if line:
-                    actors = [name.strip() for name in line.split(',')]
+                    actors = [name.strip().title() for name in line.split(',')]
                     if len(actors) == 1:
                         calculate_and_print_distance(graph, actors[0])
                     elif len(actors) == 2:

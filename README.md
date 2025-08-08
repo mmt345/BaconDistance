@@ -68,6 +68,6 @@ python bacon_distance.py --from_actor "Vin Diesel" --to_actor "Gal Gadot"
 
 ### Interactive Mode:
 ```bash
-python bacon_distance.py --input
+python bacon_distance.py
 ```
  
