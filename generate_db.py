@@ -2,6 +2,7 @@ import json
 from typing import List, Dict, Tuple
 from actor import Actor
 from movie import Movie
+from download_imdb_data import download_all_imdb_datasets
 
 # CONFIGURATION
 ACTORS_PATH = 'name.basics.tsv'
@@ -154,6 +155,8 @@ def save_to_json(actors: List[Actor], movies: List[Movie], out_path: str) -> Non
 
 
 def main():
+    download_all_imdb_datasets()
+
     print("Loading actors...")
     imdb_to_actor = load_actors(ACTORS_PATH, max_rows=MAX_ACTORS)
     print(f"Loaded {len(imdb_to_actor)} actors.")

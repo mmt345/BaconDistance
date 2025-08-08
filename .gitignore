@@ -2,5 +2,6 @@
 /forme
 *movie_database.json
 *.tsv
+*.gz
 /__pycache__
 
