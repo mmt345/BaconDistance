@@ -3,23 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <title>Bacon Distance</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #bcf4f6; 
+      font-family: 'Segoe UI';
+    }
+
+    .container {
+      max-width: 600px;
+      margin-top: 80px;
+      background: #e2f3f5;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #3dc9ce;
+      font-weight: bold;
+    }
+
+    .form-label {
+      font-weight: 500;
+    }
+
+    .button {
+      background-color: #3dc9ce;
+      color: white;
+    }
+
+    /*when you hover over the button it changes color*/
+    .button:hover {
+      background-color: #088286;
+    }
+
+    .footer-note {
+      font-size: 0.9em;
+      color: #055b61;
+      margin-top: 30px;
+      text-align: center;
+    }
+    
+  </style>
 </head>
 <body>
-  <h1>Bacon Distance Calculator :)</h1>
+  <div class="container text-center">
+    <h1>Bacon Distance 🥓🍳</h1>
+    <form action="{{ url_for('bacon_distance') }}" method="get" class="mt-3">
+      <div class="mb-3 text-start">
+        <label for="from_actor" class="form-label">From Actor:</label>
+        <input type="text" class="form-control" id="from_actor" name="from_actor" placeholder="e.g., Gal Gadot" required>
+      </div>
 
-  <form action="{{ url_for('bacon_distance') }}" method="get">
-    <label for="from_actor">From Actor:</label>
-    <input type="text" id="from_actor" name="from_actor" required>
-    <br><br>
+      <div class="mb-3 text-start">
+        <label for="to_actor" class="form-label">To Actor (optional):</label>
+        <input type="text" class="form-control" id="to_actor" name="to_actor" placeholder="Kevin Bacon">
+      </div>
 
-    <label for="to_actor">To Actor (optional):</label>
-    <input type="text" id="to_actor" name="to_actor" placeholder="Kevin Bacon">
-    <br><br>
+      <button type="submit" class="btn button">Calculate Distance</button>
+    </form>
 
-    <button type="submit">Calculate Distance</button>
-  </form>
-
-  <hr>
-  <p>You can also send requests directly to <code>/bacon_distance?from_actor=...</code></p>
+    <p class="footer-note mt-4">
+      You can also send requests directly to: <code>/bacon_distance?from_actor=<>&to_actor=</code>
+    </p>
+  </div>
 </body>
 </html>
