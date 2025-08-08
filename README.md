@@ -70,4 +70,31 @@ python bacon_distance.py --from_actor "Vin Diesel" --to_actor "Gal Gadot"
 ```bash
 python bacon_distance.py
 ```
+
+# Bacon Distance – Milestone 2
+
+This milestone adds a basic website for calculating the Bacon distance between two actors.
+
+## Included Functionality
+
+- A homepage (`/`) with a form to enter actor names.
+- A result page that shows the Bacon distance or an error.
+- Uses Flask for the server and Bootstrap for styling.
+- Loads the actor graph from `movie_database.json` (one time in the beginning).
+
+## Run Instructions
+
+1. Make sure `movie_database.json` exists (from Milestone 0).
+2. Install Flask:
+   ```bash
+   pip install flask
+   ```
+3. Run the server:
+   ```bash
+   python bacon_server.py
+   ```
+4. Open your browser at:
+   ```
+   http://localhost:5000/
+   ```
  
