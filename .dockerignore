@@ -1,0 +1,7 @@
+.git
+.gitignore
+**/__pycache__/
+**/*.pyc
+**/*movie_database.json
+**/*.tsv
+**/*.gz
