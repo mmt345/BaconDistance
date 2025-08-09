@@ -1,4 +1,5 @@
 # Default ignored files
 /forme
 movie_database.json
-*.tsv
+**/*.tsv
+**/*.gz
