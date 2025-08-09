@@ -97,4 +97,28 @@ This milestone adds a basic website for calculating the Bacon distance between t
    ```
    http://localhost:5000/
    ```
- 
+
+# Bacon Distance – Milestone 3
+
+## Overview
+In this milestone, I containerized my bacon website using **Docker** and **Docker Compose**.  
+The goal is to make the application runnable on any machine with only Docker and Git installed.
+
+The IMDb database (`movie_database.json`) is generated once during the Docker image build.  
+Docker layer caching ensures that the database is not regenerated unless generate_db (or other db related files in db folder) changes.
+
+## Run Instructions
+1. Clone the repository and switch to the milestone tag:
+    ```bash
+    git clone <my_github_repo>
+    cd project_name (BaconDistance)
+    git checkout milestone-3
+    ```
+2. Build and start the container:
+    ```bash
+    docker compose up -d
+    ```
+3. Open the site in your browser:
+    ```
+    http://localhost
+    ```
