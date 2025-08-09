@@ -1,4 +1,4 @@
-import json
+import orjson
 import math
 from typing import Dict, Set, Tuple
 from collections import deque
@@ -81,8 +81,8 @@ class ActorGraph:
         :param filename: Path to the JSON file.
         :return: An ActorGraph instance representing the connections between actors.
         """
-        with open(filename, 'r', encoding='utf-8') as file:
-            data = json.load(file)
+        with open(filename, 'rb') as f:
+            data = orjson.loads(f.read())
 
         # Build mapping from internal actor ID to actor name
         id_to_name: Dict[int, str] = {
