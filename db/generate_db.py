@@ -1,4 +1,5 @@
-import json
+import orjson
+from datetime import datetime
 from typing import List, Dict, Tuple
 from actor import Actor
 from movie import Movie
@@ -12,7 +13,7 @@ OUTPUT_JSON_PATH = 'movie_database.json'
 
 MAX_ACTORS = 10000000
 MAX_CAST = 20000000
-MAX_MOVIES = 1000000
+MAX_MOVIES = 10000000
 
 # TSV FIELD COUNTS
 ACTOR_NUM_FIELDS = 6
@@ -32,17 +33,12 @@ def read_tsv_lines(file_path: str, max_rows: int) -> List[List[str]]:
     :param max_rows: Maximum number of lines to read.
     :return: List of list of strings (split parts).
     """
-    lines = []
-
     with open(file_path, 'r', encoding='utf-8') as f:
         next(f)  # Skip header
 
         for i, line in enumerate(f):
-            if i >= max_rows:
-                return lines
-            lines.append(line.strip().split('\t'))
-
-    return lines
+            if i <= max_rows:
+                yield line.strip().split('\t')
 
 # LOADERS
 def load_actors(file_path: str, max_rows) -> Dict[str, Actor]:
@@ -53,17 +49,15 @@ def load_actors(file_path: str, max_rows) -> Dict[str, Actor]:
     :param max_rows: Max number of rows to read.
     :return: A dict mapping IMDb ID to Actor object.
     """
-    actors = []
     imdb_to_actor = {}
 
     for i, parts in enumerate(read_tsv_lines(file_path, max_rows)):
         if len(parts) == ACTOR_NUM_FIELDS:
             imdb_id, name, _, _, professions_str, _ = parts
-            professions = professions_str.lower().split(',')
+            professions = professions_str.split(',')
 
             if any(prof in professions for prof in ("actor", "actress")):
                 actor = Actor(imdb_id, name)
-                actors.append(actor)
                 imdb_to_actor[imdb_id] = actor
         else:
             print(f"Line number {i} in actors table doesn't match the required number of fields {ACTOR_NUM_FIELDS}.")
@@ -147,8 +141,9 @@ def save_to_json(actors: List[Actor], movies: List[Movie], out_path: str) -> Non
     }
 
     try:
-        with open(out_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=JSON_INDENT)
+        with open(out_path, 'wb') as f:
+            json_data = orjson.dumps(data, option=orjson.OPT_INDENT_2)
+            f.write(json_data)
         print(f"Data saved to {out_path} (actors: {len(actors)}, movies: {len(movies)})")
     except IOError as e:
         print(f"Failed to write to {out_path}: {e}")
@@ -157,22 +152,22 @@ def save_to_json(actors: List[Actor], movies: List[Movie], out_path: str) -> Non
 def main():
     download_all_imdb_datasets()
 
-    print("Loading actors...")
+    print(f"{datetime.now().strftime('%H:%M:%S')} Loading actors...")
     imdb_to_actor = load_actors(ACTORS_PATH, max_rows=MAX_ACTORS)
-    print(f"Loaded {len(imdb_to_actor)} actors.")
+    print(f"{datetime.now().strftime('%H:%M:%S')} Loaded {len(imdb_to_actor)} actors.")
 
-    print("Loading cast...")
+    print(f"{datetime.now().strftime('%H:%M:%S')} Loading cast...")
     cast = load_cast(CAST_PATH, imdb_to_actor, max_rows=MAX_CAST)
-    print(f"Loaded cast for {len(cast)} movies.")
+    print(f"{datetime.now().strftime('%H:%M:%S')} Loaded cast for {len(cast)} movies.")
 
-    print("Loading movies...")
+    print(f"{datetime.now().strftime('%H:%M:%S')} Loading movies...")
     movies = load_movies(MOVIES_PATH, cast, max_rows=MAX_MOVIES)
-    print(f"Loaded {len(movies)} movies.")
+    print(f"{datetime.now().strftime('%H:%M:%S')} Loaded {len(movies)} movies.")
 
-    print("Saving to JSON...")
+    print(f"{datetime.now().strftime('%H:%M:%S')} Saving to JSON...")
     save_to_json(imdb_to_actor.values(), movies, OUTPUT_JSON_PATH)
 
-    print("Done.")
+    print(f"{datetime.now().strftime('%H:%M:%S')} Done.")
 
 
 if __name__ == "__main__":

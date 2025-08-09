@@ -3,5 +3,5 @@
 *movie_database.json
 *.tsv
 *.gz
-/__pycache__
+**/__pycache__/*.pyc
 
