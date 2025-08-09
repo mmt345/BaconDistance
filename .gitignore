@@ -1,6 +1,6 @@
 # Default ignored files
 /forme
 *movie_database.json
-*.tsv
 /__pycache__
-
+**/*.tsv
+**/*.gz
