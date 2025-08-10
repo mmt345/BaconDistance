@@ -60,7 +60,7 @@ def main():
     )
 
     args = parser.parse_args()
-    graph = ActorGraph.load_from_json(args.json_file)
+    graph = ActorGraph.load_from_db()
 
     if args.from_actor:
         # Single calculation mode

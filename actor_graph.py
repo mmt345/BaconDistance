@@ -3,6 +3,8 @@ import math
 from typing import Dict, Set, Tuple
 from collections import deque
 from itertools import combinations
+from db.db_session import Session, local_session
+from db.orm import Actor, Movie, Cast
 
 
 class ActorGraph:
@@ -69,45 +71,46 @@ class ActorGraph:
         return math.inf
 
     @classmethod
-    def load_from_json(cls, filename: str) -> "ActorGraph":
+    def load_from_db(cls) -> "ActorGraph":
         """
-        Loads actor and movie data from a JSON file and constructs a graph object
-        where each actor is a node, and an edge exists between any two actors
-        who appeared in the same movie.
+        Loads actor and movie data from a sql db (using orm) and constructs a graph object
+        where each actor is a node, and an edge exists between any two actors who appeared in the same movie.
 
         This implementation also ensures that actors who didn't appear in any movie
         are still represented as isolated nodes in the graph.
 
-        :param filename: Path to the JSON file.
         :return: An ActorGraph instance representing the connections between actors.
         """
-        with open(filename, 'rb') as f:
-            data = orjson.loads(f.read())
+        with local_session() as session:
+            graph = cls()
 
-        # Build mapping from internal actor ID to actor name
-        id_to_name: Dict[int, str] = {
-            actor["id"]: actor["name"]
-            for actor in data["actors"]
-        }
+            # Build mapping from internal actor ID to actor name
+            actors = session.query(Actor).all()
 
-        graph = cls()
+            id_to_name: Dict[str, str] = {
+                str(actor.imdb_id): actor.name
+                for actor in actors
+            }
 
-        # Ensure all actors are added to the graph, even if they are isolated
-        for actor_name in id_to_name.values():
-            graph.graph.setdefault(actor_name, set())
+            # Ensure all actors are added to the graph, even if they are isolated
+            for actor_name in id_to_name.values():
+                graph.graph.setdefault(actor_name, set())
 
-        for movie in data["movies"]:
-            cast_ids = movie.get("cast", [])
+            movies = session.query(Movie).all()
+            for movie in movies:
+                casts = session.query(Cast).filter(Cast.movie_imdb_id == movie.imdb_id).all()
+                cast_ids = [cast.actor_imdb_id for cast in casts]
 
-            # Filter out unknown actor IDs (optional for safety)
-            cast_names = [
-                id_to_name[actor_id]
-                for actor_id in cast_ids
-                if actor_id in id_to_name
-            ]
+                # Filter out unknown actor IDs (optional for safety)
+                cast_names = [
+                    id_to_name[actor_id]
+                    for actor_id in cast_ids
+                    if actor_id in id_to_name
+                ]
 
-            # Create bidirectional edges between all actors in the same movie
-            for actor1, actor2 in combinations(cast_names, 2):
-                graph.add_coappearance(actor1, actor2)
+                # Create bidirectional edges between all actors in the same movie
+                for actor1, actor2 in combinations(cast_names, 2):
+                    graph.add_coappearance(actor1, actor2)
 
-        return graph
+            return graph
+    

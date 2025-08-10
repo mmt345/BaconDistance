@@ -1,8 +1,58 @@
-version: "3.8"
-
 services:
-  web:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: bacon
+    ports:
+      - "5432:5432" #It's the default postgres port
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d bacon"]
+      interval: 5s
+      timeout: 20s
+      retries: 3
+
+  generate_db:
     build: .
+    profiles: ["generate_db"] # Activates on demand
+    command: "python db/generate_db.py"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://user:pass@db:5432/bacon
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web_with_generate_db:
+    build: .
+    profiles: ["generate_db"] # Activates on demand
     ports:
       - "80:5000"
+    command: "python bacon_server.py"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://user:pass@db:5432/bacon
+    depends_on:
+      db:
+        condition: service_healthy
+      generate_db:
+        condition: service_completed_successfully
     restart: unless-stopped
+
+  web:
+    build: .
+    profiles: ["no_generate_db"] # Activates on demand
+    ports:
+      - "80:5000"
+    command: "python bacon_server.py"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://user:pass@db:5432/bacon
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  db_data:
+

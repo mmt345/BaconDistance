@@ -4,4 +4,4 @@
 *.tsv
 *.gz
 **/__pycache__/*.pyc
-
+.idea/

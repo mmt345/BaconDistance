@@ -5,7 +5,7 @@ import math
 app = Flask(__name__)
 
 # Load the graph once when the server starts
-ACTORS_GRAPH = ActorGraph.load_from_json("movie_database.json")
+ACTORS_GRAPH = ActorGraph.load_from_db()
 
 @app.route("/")
 def home():

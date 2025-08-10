@@ -1,2 +1,4 @@
 flask
 orjson
+sqlalchemy
+psycopg2-binary

@@ -122,3 +122,43 @@ Docker layer caching ensures that the database is not regenerated unless generat
     ```
     http://localhost
     ```
+
+# Bacon Distance – Milestone 4
+
+## Overview
+In this milestone, the project was upgraded to use **PostgreSQL** with **Docker Compose profiles** for flexible startup options:  
+- **`generate_db`** – Builds the database from IMDb source files before starting the web server (first-time setup or refresh).  (about 20 minutes to generate the entire db)
+- **`no_generate_db`** – Starts the app using the existing database without rebuilding it (faster startup).  
+
+PostgreSQL runs in its own container with a persistent volume so data survives restarts, there are also health checks that ensure the web server starts only after the database is ready (and after data generation, if requested)
+---
+## Why PostgreSQL (SQL vs NoSQL)
+- **Relational fit** – Actors and movies form a relationship, mapping naturally to relational tables and foreign keys.
+- **ORM-friendly** – Works great with SQLAlchemy. 
+**Not NoSQL:** Document stores like MongoDB are less efficient for relationship queries.  
+---
+
+## Run Instructions
+
+1. Clone & switch to milestone:
+   ```bash
+   git clone <my_github_repo>
+   cd project_name (BaconDistance)
+   git checkout milestone-4
+   ```
+2. Run with DB generation:
+   ```bash
+   docker compose --profile generate_db up -d
+   ```
+2. Run without DB generation:
+   ```bash
+   docker compose --profile no_generate_db up -d
+   ```
+3. Open in browser:
+   ```
+   http://localhost
+   ```
+**Reset database:**
+```bash
+docker compose down -v
+```
